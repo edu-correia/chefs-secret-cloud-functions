@@ -1,0 +1,1 @@
+export class VideoExtractionError extends Error {}
