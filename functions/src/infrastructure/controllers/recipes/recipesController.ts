@@ -1,3 +1,5 @@
+import { ExtractRecipeFromVideoDTO } from "../../../domain/entities/dtos/extractRecipeFromVideoDTO";
+import { getExtractRecipeFromVideoUseCase } from "../../../factories/extractRecipeFromVideoFactory";
 import { getEnqueueRecipeExtractionUseCase } from "../../../factories/enqueueRecipeExtractionFactory";
 import { EnqueueRecipeExtractionRequestSchema } from "../../validations/schemas/EnqueueRecipeExtractionRequestSchema";
 
@@ -15,6 +17,15 @@ class RecipesController {
             message: "Recipe extraction started successfully",
             recipe: recipe
         });
+    }
+
+    async extractRecipeFromVideo(jobId: string, videoUrl: string) {
+        const data: ExtractRecipeFromVideoDTO = {
+            videoUrl,
+            jobId
+        }
+
+        await getExtractRecipeFromVideoUseCase().execute(data, "459c23f7-4417-44eb-8d58-ba41cc7b98cc");
     }
 }
 
