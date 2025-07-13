@@ -5,13 +5,15 @@ import { FailureResponse, SuccessResponse } from "./geminiAiDTOs";
 import { ExtractedRecipe } from "../../domain/entities/models/ExtractedRecipe";
 import { RecipeDifficulty } from "../../domain/entities/enums/RecipeDifficuty";
 import { RecipeCost } from "../../domain/entities/enums/RecipeCost";
+import { SecretManager } from "../../domain/interfaces/SecretManager";
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 
 export class GeminiAITextAnalizer implements AITextAnalizer {
     private aiModel;
+    
+    constructor(secretManager: SecretManager) {
+        const genAI = new GoogleGenerativeAI(secretManager.getAITextAnalyzerKey());
 
-    constructor() {
         this.aiModel = genAI.getGenerativeModel({
             model: "gemini-1.5-flash",
             generationConfig: {
