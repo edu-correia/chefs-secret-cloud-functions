@@ -16,6 +16,7 @@ export class FfmpegExternalFileDownloader implements ExternalFileDownloader {
               .noVideo()
               .audioCodec(MP3_CODIFICATION)
               .audioQuality(AUDIO_QUALITY)
+              .addOutputOption("-f", "mp3")
               .on('end', () => {
                 // TODO: Add success log
                 resolve();
