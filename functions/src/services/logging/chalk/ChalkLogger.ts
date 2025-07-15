@@ -21,7 +21,7 @@ export class ChalkLogger implements Logger {
         );
     }
 
-    error(message: string, error: Error): void {
+    error(message: string, error?: Error): void {
         const date: string = new Date().toLocaleString();
 
         console.log(

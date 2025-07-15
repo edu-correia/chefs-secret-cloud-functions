@@ -15,7 +15,7 @@ export class CompositeLogger implements Logger {
         this.loggers.forEach(logger => logger.info(message));
     }
 
-    error(message: string, error: Error): void {
+    error(message: string, error?: Error): void {
         this.loggers.forEach(logger => logger.error(message, error));
     }
 }

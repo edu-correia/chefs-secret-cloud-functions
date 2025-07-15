@@ -11,7 +11,7 @@ export class CloudFunctionsLogger implements Logger {
         logger.info(`[INFO] ${message}`);
     }
 
-    error(message: string, error: Error): void {
+    error(message: string, error?: Error): void {
         logger.error(`[ERROR] ${message}`, error);
     }
 }

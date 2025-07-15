@@ -17,18 +17,51 @@ export class FirestoreRecipesRepository implements RecipesRepository {
         throw new Error("Method not implemented.");
     }
 
-    getRecipesByUserId(userId: string): Promise<Recipe[]> {
-        throw new Error("Method not implemented.");
+    async getRecipesByUserId(userId: string): Promise<Recipe[]> {
+        const userRef = this.db
+            .collection(this.USERS_COLLECTION)
+            .doc(userId);
+
+        const recipes = await this.db
+            .collection(this.RECIPES_COLLECTION)
+            .where("ownerId", "==", userRef)
+            .get();
+
+        return recipes.docs.map(doc => {
+            const data = doc.data();
+            return {
+                id: doc.id,
+                createdAt: data.createdAt.toDate(),
+                updatedAt: data.updatedAt.toDate(),
+                ownerId: data.ownerId.id,
+                videoUrl: data.videoUrl,
+                photoUrl: data.photoUrl,
+                title: data.title,
+                description: data.description,
+                utensils: data.utensils || [],
+                ingredients: data.ingredients || [],
+                instructions: data.instructions || [],
+                duration: data.duration || 0,
+                difficulty: data.difficulty || "easy",
+                cost: data.cost || "low",
+                tags: data.tags || [],
+                servings: data.servings || 1,
+            };
+        })
     }
 
     async createRecipe(recipe: Recipe): Promise<void> {
+        const ownerRef = this.db
+            .collection(this.USERS_COLLECTION)
+            .doc(recipe.ownerId);
+
         await this.db
             .collection(this.RECIPES_COLLECTION)
             .doc(recipe.id)
             .set({
                 "createdAt": Timestamp.fromDate(recipe.createdAt),
                 "updatedAt": Timestamp.fromDate(recipe.updatedAt),
-                "ownerId": `${this.USERS_COLLECTION}/${recipe.ownerId}`,
+                "ownerId": ownerRef,
                 "videoUrl": recipe.videoUrl,
                 "photoUrl": recipe.photoUrl,
                 "title": recipe.title,

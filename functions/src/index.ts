@@ -19,6 +19,10 @@ export const enqueueRecipeExtractionRequest = onRequest(async (request, response
     recipesController.enqueueRecipeExtraction(request, response);
 });
 
+export const fetchLoggedUserRecipes = onRequest(async (request, response) => {
+    recipesController.fetchLoggedUserRecipes(request, response);
+});
+
 export const onJobCreated = onDocumentCreated({
     document: "jobs/{jobId}",
     secrets: [assemblyAIApiKey, geminiApiKey, rapidApiKey]
