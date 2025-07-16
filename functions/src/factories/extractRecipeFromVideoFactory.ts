@@ -5,7 +5,7 @@ import { FirestoreJobsRepository } from "../services/firestore/FirestoreJobsRepo
 import { FirestoreRecipesRepository } from "../services/firestore/FirestoreRecipesRepository";
 import { GCPSecretManager } from "../services/gcp/GCPSecretManager";
 import { GeminiAITextAnalizer } from "../services/gemini/GeminiAITextAnalizer";
-import { ChalkLogger } from "../services/logging/chalk/ChalkLogger";
+import { ColoretteLogger } from "../services/logging/colorette/ColoretteLogger";
 import { CompositeLogger } from "../services/logging/compositeLogger";
 import { CloudFunctionsLogger } from "../services/logging/firebaseCloudFunctions/CloudFunctionsLogger";
 import { PathLocalFileManager } from "../services/path/PathLocalFileManager";
@@ -22,9 +22,9 @@ export const getExtractRecipeFromVideoUseCase = () => {
     const videoInfoExtractor = new RapidApiInstagramVideoInfoExtractor(secretManager);
     const aiAudioAnalyzer = new AssemblyAIAudioAnalizer(secretManager);
     const localFileManager = new PathLocalFileManager();
-    const chalkLogger = new ChalkLogger();
+    const coloretteLogger = new ColoretteLogger();
     const functionsLogger = new CloudFunctionsLogger();
-    const logger = new CompositeLogger(chalkLogger, functionsLogger);
+    const logger = new CompositeLogger(coloretteLogger, functionsLogger);
 
     return new ExtractRecipeFromVideoUseCase(idGenerator, recipesRepository,
         jobsRepository, aiTextAnalizer, externalFileDownloader,
