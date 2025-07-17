@@ -24,7 +24,7 @@ export class FirestoreRecipesRepository implements RecipesRepository {
 
         const recipes = await this.db
             .collection(this.RECIPES_COLLECTION)
-            .where("ownerId", "==", userRef)
+            .where("ownerIdRef", "==", userRef)
             .get();
 
         return recipes.docs.map(doc => {
@@ -33,7 +33,7 @@ export class FirestoreRecipesRepository implements RecipesRepository {
                 id: doc.id,
                 createdAt: data.createdAt.toDate(),
                 updatedAt: data.updatedAt.toDate(),
-                ownerId: data.ownerId.id,
+                ownerId: data.ownerIdRef.id,
                 videoUrl: data.videoUrl,
                 photoUrl: data.photoUrl,
                 title: data.title,
@@ -61,7 +61,7 @@ export class FirestoreRecipesRepository implements RecipesRepository {
             .set({
                 "createdAt": Timestamp.fromDate(recipe.createdAt),
                 "updatedAt": Timestamp.fromDate(recipe.updatedAt),
-                "ownerId": ownerRef,
+                "ownerIdRef": ownerRef,
                 "videoUrl": recipe.videoUrl,
                 "photoUrl": recipe.photoUrl,
                 "title": recipe.title,
