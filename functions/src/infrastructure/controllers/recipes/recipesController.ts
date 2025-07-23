@@ -1,11 +1,14 @@
+import express, { Request, Response } from "express";
+
 import { ExtractRecipeFromVideoDTO } from "../../../domain/entities/dtos/extractRecipeFromVideoDTO";
 import { getExtractRecipeFromVideoUseCase } from "../../../factories/extractRecipeFromVideoFactory";
 import { getEnqueueRecipeExtractionUseCase } from "../../../factories/enqueueRecipeExtractionFactory";
 import { EnqueueRecipeExtractionRequestSchema } from "../../validations/schemas/EnqueueRecipeExtractionRequestSchema";
 import { getFetchLoggedUserRecipesUseCase } from "../../../factories/fetchLoggedUserRecipesFactory";
+import { getFetchRecipeByIdUseCase } from "../../../factories/fetchRecipeByIdFactory";
 
 class RecipesController {
-    async enqueueRecipeExtraction(request: any, response: any) {
+    async enqueueRecipeExtraction(request: Request, response: Response) {
         const { success, data, error } = EnqueueRecipeExtractionRequestSchema.safeParse(request.body);
         if (!success) {
             response.status(400).json({ error: error.message });
@@ -20,12 +23,26 @@ class RecipesController {
         });
     }
 
-    async fetchLoggedUserRecipes(request: any, response: any) {
+    async fetchLoggedUserRecipes(request: Request, response: Response) {
         const recipes = await getFetchLoggedUserRecipesUseCase().execute("459c23f7-4417-44eb-8d58-ba41cc7b98cc")
 
         return response.status(200).json({
             message: "User's recipes listed successfully",
             recipes
+        });
+    }
+
+    async fetchRecipeById(request: Request, response: Response) {
+        const recipeId = request.params.recipeId;
+        if (!recipeId) {
+            return response.status(400).json({ error: "Recipe ID is required" });
+        }
+
+        const recipe = await getFetchRecipeByIdUseCase().execute(recipeId);
+
+        return response.status(200).json({
+            message: "Recipe listed successfully",
+            recipe
         });
     }
 

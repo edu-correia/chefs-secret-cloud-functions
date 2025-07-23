@@ -1,5 +1,6 @@
 import { RecipeCost } from "../enums/RecipeCost";
 import { RecipeDifficulty } from "../enums/RecipeDifficuty";
+import { User } from "./User";
 
 export interface Recipe {
     id: string;
@@ -8,6 +9,7 @@ export interface Recipe {
     ownerId: string;
     videoUrl: string;
     photoUrl: string;
+    owner?: User;
 
     // Dynamic values
     title: string;

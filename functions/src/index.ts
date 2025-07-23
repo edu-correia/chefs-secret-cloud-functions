@@ -1,9 +1,13 @@
 import * as dotenv from 'dotenv';
 
+import express from "express";
+
 import { onRequest } from "firebase-functions/v2/https";
 import { onDocumentCreated } from "firebase-functions/v2/firestore";
 import {initializeApp } from "firebase-admin/app";
 import { defineSecret } from 'firebase-functions/params';
+
+import { recipesController } from "./infrastructure/controllers/recipes/recipesController";
 
 const assemblyAIApiKey = defineSecret('ASSEMBLY_AI_API_KEY');
 const geminiApiKey = defineSecret('GEMINI_API_KEY');
@@ -13,15 +17,16 @@ initializeApp();
 
 dotenv.config();
 
-import { recipesController } from "./infrastructure/controllers/recipes/recipesController";
+const app = express();
+app.use(express.json());
 
-export const enqueueRecipeExtractionRequest = onRequest(async (request, response) => {
-    recipesController.enqueueRecipeExtraction(request, response);
-});
+app.post("/recipes/enqueue-extraction", recipesController.enqueueRecipeExtraction);
 
-export const fetchLoggedUserRecipes = onRequest(async (request, response) => {
-    recipesController.fetchLoggedUserRecipes(request, response);
-});
+app.get("/recipes/my-recipes", recipesController.fetchLoggedUserRecipes);
+
+app.get("/recipes/by-recipe-id/:recipeId", recipesController.fetchRecipeById);
+
+export const api = onRequest(app);
 
 export const onJobCreated = onDocumentCreated({
     document: "jobs/{jobId}",
