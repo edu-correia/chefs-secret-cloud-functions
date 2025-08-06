@@ -12,4 +12,8 @@ export class GCPSecretManager implements SecretManager {
     getVideoInfoExtractorKey(): string {
         return process.env.RAPID_API_KEY || "";
     }
+
+    getPreviewRetrieverKey(): string {
+        return process.env.META_OEMBED_API_KEY || "";
+    }
 }

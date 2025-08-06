@@ -12,6 +12,7 @@ import { recipesController } from "./infrastructure/controllers/recipes/recipesC
 const assemblyAIApiKey = defineSecret('ASSEMBLY_AI_API_KEY');
 const geminiApiKey = defineSecret('GEMINI_API_KEY');
 const rapidApiKey = defineSecret('RAPID_API_KEY');
+const metaOEmbedApiKey = defineSecret('META_OEMBED_API_KEY');
 
 initializeApp();
 
@@ -20,13 +21,17 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 
+app.get("/recipes/video-preview", recipesController.fetchVideoPreview);
+
 app.post("/recipes/enqueue-extraction", recipesController.enqueueRecipeExtraction);
 
 app.get("/recipes/my-recipes", recipesController.fetchLoggedUserRecipes);
 
 app.get("/recipes/by-recipe-id/:recipeId", recipesController.fetchRecipeById);
 
-export const api = onRequest(app);
+export const api = onRequest({
+    secrets: [metaOEmbedApiKey]
+}, app);
 
 export const onJobCreated = onDocumentCreated({
     document: "jobs/{jobId}",

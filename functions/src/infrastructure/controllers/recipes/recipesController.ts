@@ -6,8 +6,25 @@ import { getEnqueueRecipeExtractionUseCase } from "../../../factories/enqueueRec
 import { EnqueueRecipeExtractionRequestSchema } from "../../validations/schemas/EnqueueRecipeExtractionRequestSchema";
 import { getFetchLoggedUserRecipesUseCase } from "../../../factories/fetchLoggedUserRecipesFactory";
 import { getFetchRecipeByIdUseCase } from "../../../factories/fetchRecipeByIdFactory";
+import { FetchVideoPreviewRequestSchema } from "../../validations/schemas/FetchVideoPreviewRequestSchema";
+import { getFetchVideoPreviewUseCase } from "../../../factories/fetchVideoPreviewFactory";
 
 class RecipesController {
+    async fetchVideoPreview(request: Request, response: Response) {
+        const { success, data, error } = FetchVideoPreviewRequestSchema.safeParse(request.body);
+        if (!success) {
+            response.status(400).json({ error: error.message });
+            return;
+        }
+
+        const preview = await getFetchVideoPreviewUseCase().execute(data);
+
+        return response.status(200).json({
+            message: "Preview retrieved successfully",
+            preview
+        });
+    }
+
     async enqueueRecipeExtraction(request: Request, response: Response) {
         const { success, data, error } = EnqueueRecipeExtractionRequestSchema.safeParse(request.body);
         if (!success) {
